@@ -1,36 +1,93 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ivane.dev
 
-## Getting Started
+Personal site and blog for Iskander — a terminal-flavoured, dark-mode-first portfolio built with
+Next.js and exported as a fully static site to GitHub Pages.
 
-First, run the development server:
+Live at **[ivane.dev](https://ivane.dev)**.
+
+## Stack
+
+- **Next.js 16** (App Router) with `output: "export"` — no Node.js runtime in production
+- **React 19**, **TypeScript**
+- **Tailwind CSS 4** alongside a CSS custom-property design system in `src/app/globals.css`
+- **gray-matter** + **marked** for the markdown blog pipeline
+- **Bun** as package manager and CI runner
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+bun install
+bun run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Other scripts:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+bun run build   # static export into out/
+bun run start   # serve a production build
+bun run lint    # eslint
+```
 
-## Learn More
+## Project layout
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+  app/
+    page.tsx            # landing page
+    blog/               # post index + [slug] detail route
+    projects/           # project list
+    globals.css         # design tokens (colors, type scale, spacing)
+    layout.tsx          # fonts, theme bootstrap, header
+  components/
+    core/               # Button, Tag, TerminalPrompt
+    content/            # Markdown, CodeBlock, ProjectCard
+    navigation/         # Header
+  lib/
+    content/*.md        # blog posts
+    posts.ts            # frontmatter parsing + post lookup
+    projects.ts         # project list data
+public/CNAME            # custom domain for GitHub Pages
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Writing a post
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Drop a markdown file into `src/lib/content/`. The filename becomes the slug
+(`why-terminals.md` → `/blog/why-terminals/`), and the frontmatter is required:
 
-## Deploy on Vercel
+```markdown
+---
+title: Why I still live in the terminal
+date: 2026-06-02
+tags: [dev, opinion]
+excerpt: A case for the command line as the calmest place to think.
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Body starts here. The first paragraph is rendered as the lead.
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Posts are read at build time and sorted newest-first; a missing `title`, `date`, or `excerpt`
+fails the build rather than rendering a half-empty page.
+
+Fenced code blocks render through `<CodeBlock>`, which shows terminal chrome. The info string
+carries both a language and an optional filename tab:
+
+````markdown
+```tsx app/layout.tsx
+export default function RootLayout() { /* ... */ }
+```
+````
+
+## Theming
+
+Dark is the default. `layout.tsx` inlines a small pre-paint script that reads the persisted
+`theme` value from `localStorage` and stamps `data-theme` on `<html>`, so there is no flash of the
+wrong theme. Both themes are defined as token overrides at the top of `globals.css` — components
+reference tokens (`var(--fg-primary)`, `var(--accent-500)`) rather than hard-coded colors.
+
+## Deployment
+
+Pushing to `main` triggers `.github/workflows/deploy.yml`: Bun installs from the frozen lockfile,
+`next build` writes the static export to `out/`, and `actions/deploy-pages` publishes it. The
+custom domain comes from `public/CNAME`.
