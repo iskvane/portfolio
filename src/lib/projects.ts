@@ -10,7 +10,7 @@ export const projects: Project[] = [
   },
   {
     title: "cli-notes",
-    description: "A terminal-first note-taking tool with fuzzy search and git sync.",
+    description: "A terminal-first note-taking tool with fuzzy search.",
     tags: ["rust", "sqlite"],
     year: "2025",
     href: "https://github.com/iskvane/cli-notes",

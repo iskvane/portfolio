@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CodeBlock } from "@/components/content/CodeBlock";
+import { Markdown } from "@/components/content/Markdown";
 import { Tag } from "@/components/core/Tag";
-import { getPost, posts } from "@/lib/posts";
+import { getPost, getPosts } from "@/lib/posts";
 
 export function generateStaticParams() {
-  return posts.map((p) => ({ slug: p.slug }));
+  return getPosts().map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({
@@ -40,22 +40,7 @@ export default async function BlogPostPage({
           <Tag key={t}>{t}</Tag>
         ))}
       </div>
-      {post.body.map((paragraph, i) => (
-        <p
-          key={i}
-          style={{
-            font: i === 0 ? "var(--text-body-lg)" : "var(--text-body)",
-            color: "var(--fg-secondary)",
-            margin: "0 0 22px",
-          }}
-        >
-          {paragraph}
-        </p>
-      ))}
-      {post.code && <CodeBlock filename={post.code.filename} lang={post.code.lang} code={post.code.code} />}
-      {post.outro && (
-        <p style={{ font: "var(--text-body)", color: "var(--fg-secondary)", margin: "26px 0 0" }}>{post.outro}</p>
-      )}
+      <Markdown markdown={post.body} />
     </div>
   );
 }

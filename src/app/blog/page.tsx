@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Tag } from "@/components/core/Tag";
-import { posts } from "@/lib/posts";
+import { getPosts } from "@/lib/posts";
 
 export const metadata: Metadata = {
   title: "blog — ivane.dev",
 };
 
 export default function BlogPage() {
+  const posts = getPosts();
   return (
     <div style={{ maxWidth: "var(--container-max)", margin: "0 auto", padding: "70px 24px 60px", width: "100%" }}>
       <h1 style={{ font: "var(--text-h2)", color: "var(--fg-primary)", margin: "0 0 8px" }}>$ ls posts/</h1>

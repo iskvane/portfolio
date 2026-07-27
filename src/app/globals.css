@@ -157,6 +157,72 @@ pre {
   font-family: var(--font-mono);
 }
 
+/* Blog post body: styles the HTML generated from markdown, which can't carry
+   the inline styles used elsewhere in the app. The prose wrappers in
+   <Markdown> are `display: contents`, so these elements are children here. */
+.post-body p {
+  font: var(--text-body);
+  color: var(--fg-secondary);
+  margin: 0 0 22px;
+}
+.post-body .lead p:first-child {
+  font: var(--text-body-lg);
+}
+.post-body h2 {
+  font: var(--text-h3);
+  color: var(--fg-primary);
+  margin: 40px 0 14px;
+}
+.post-body h3 {
+  font: var(--text-h4);
+  color: var(--fg-primary);
+  margin: 32px 0 12px;
+}
+.post-body ul,
+.post-body ol {
+  color: var(--fg-secondary);
+  font: var(--text-body);
+  margin: 0 0 22px;
+  padding-left: var(--space-5);
+}
+.post-body li {
+  margin-bottom: var(--space-2);
+}
+.post-body li::marker {
+  color: var(--fg-muted);
+}
+.post-body strong {
+  color: var(--fg-primary);
+  font-weight: 600;
+}
+/* Inline code only — fenced blocks render through <CodeBlock>, not this rule */
+.post-body :not(pre) > code {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--accent-400);
+  font-size: 0.875em;
+  padding: 0.1em 0.35em;
+}
+.post-body a {
+  text-decoration: underline;
+}
+.post-body blockquote {
+  border-left: 2px solid var(--accent-600);
+  color: var(--fg-muted);
+  margin: 0 0 22px;
+  padding-left: var(--space-4);
+}
+.post-body hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: var(--space-6) 0;
+}
+.post-body img {
+  border-radius: var(--radius-md);
+  max-width: 100%;
+}
+
 /* Portfolio grid: 2-up on desktop per the design, single column on mobile */
 .project-grid {
   display: grid;
